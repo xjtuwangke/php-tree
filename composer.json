@@ -1,0 +1,24 @@
+{
+    "name": "xjtuwangke/tree",
+    "type": "library",
+    "version": "0.0.1",
+    "time" : "2014-07-25",
+    "license" : "MIT",
+    "description": "a tree model",
+    "homepage": "http://github.com/xjtuwangke/php-tree/",
+    "authors": [
+        {
+            "name" : "wangke",
+            "email": "wangke85@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4"
+    },
+    "autoload": {
+        "psr-0": {
+            "Tree": "src/",
+            "test": "tests/"
+        }
+    }
+}
