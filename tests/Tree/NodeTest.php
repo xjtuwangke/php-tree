@@ -35,12 +35,17 @@ class NodeTest extends \PHPUnit_Framework_TestCase{
         $child24 = new Node( 'child24' );
         $child3  = new Node( 'child3' );
         $child221 = new Node( 'child221' );
+        $child222 = new Node( 'child222' );
 
         $tree->addChild( $child1);
         $this->assertEquals( $tree->getRoot() , $child1->getRoot() );
         $this->assertEquals( ( $tree->getRoot() == $child221->getRoot() ) , false );
 
         $this->assertEquals( $tree , $child1->getRoot() );
+        $this->assertEquals( $tree->isRoot() , true );
+        $this->assertEquals( $child1->isRoot() , false );
+        $this->assertEquals( $tree->isLeaf() , false );
+        $this->assertEquals( $child1->isLeaf() , true );
         $this->assertEquals( ( $tree == $child221->getRoot() ) , false );
         $tree->addChild( $child2->addChild( $child22->addChild( $child221) ) );
         $this->assertEquals( ( $tree == $child221->getRoot() ) , true );
@@ -58,10 +63,45 @@ class NodeTest extends \PHPUnit_Framework_TestCase{
         $this->assertEquals( $tree->getChildren() , [$child1 , $child2 , $child3]);
 
         $child22->setParent( $child3 );
-        var_dump( $child3->getChildren() );
 
-        $this->assertEquals( $child3->getChildren() , [ $child22 ] );
+        $this->assertEquals( $tree->isParentOf( $child1 ) , true );
+        $this->assertEquals( $child2->isParentOf( $child3 ), false );
+        $this->assertEquals( $child2->isChildOf( $tree ) , true );
+        $this->assertEquals( $child3->isChildOf( $child1 ), false );
+
+        $this->assertEquals( $tree->isAncestorOf( $child221 ) , true );
+        $this->assertEquals( $tree->isAncestorOf( $child222 ) , false );
+
         $this->assertEquals( $child2->getChildren() , [] );
+        $this->assertEquals( $child3->getChildren() , [ $child22 ] );
+
+        $child2->setChildren( [$child21 , $child24 ] );
+        $child21->insertNextSibling( $child22 );
+        $child24->insertPrevSibling( $child23 );
+        $child24->insertPrevSibling( $child23 );
+        $this->assertEquals( $child21->nextSibling() , $child22 );
+        $this->assertEquals( $child24->prevSibling() , $child23 );
+        $this->assertEquals( $child24->nextSibling() , null );
+        $this->assertEquals( $child21->prevSibling() , null );
+        $this->assertEquals( $child21->nextSiblings() , [ $child22 , $child23 , $child24] );
+        $this->assertEquals( $child23->prevSiblings() , [ $child21 , $child22 ] );
+        $this->assertEquals( $child23->getSiblings() , $child2->getChildren() );
+        $this->assertEquals( $child2->getChildren() , [$child21 , $child22 , $child23 , $child24 ] );
+
+        $child2->removeAllChildren();
+        $this->assertEquals( $child23->getSiblings() , $child2->getChildren() );
+        $this->assertEquals( $child2->getChildren() , [] );
+
+        $child2->setChildren( [$child21 , $child24 , $child23 ] );
+        $child24->remove();
+        $this->assertEquals( $child2->getChildren() , [ $child21 , $child23 ] );
+
+        $this->assertEquals( $child21->hasParent( $child2 ) , true );
+        $this->assertEquals( $child21->hasParent( $tree ) , false );
+        $this->assertEquals( $child24->hasParent( $child2 ) , false );
+        $this->assertEquals( $child2->hasChild( $child23 ), true );
+        $this->assertEquals( $child2->hasChild( $child24 ) , false );
+
 
     }
 }

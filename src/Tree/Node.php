@@ -117,7 +117,7 @@ class Node implements NodeInterface{
     }
 
     public function isRoot(){
-        if( $this == $this->root ){
+        if( $this == $this->getRoot() ){
             return true;
         }
         else{
@@ -179,7 +179,7 @@ class Node implements NodeInterface{
         if( $this->isRoot() ){
             return [];
         }
-        $siblings = $this->parent()->getChildren();
+        $siblings = $this->getParent()->getChildren();
         if( $type == 'all' ){
             return $siblings;
         }
